@@ -191,6 +191,82 @@
     #notes-panel h4 { font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: .5px; }
     #notes-content { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; }
 
+    /* Mobile Responsive (<= 900px) */
+    @media (max-width: 900px) {
+      .slide {
+        padding: 16px 14px 68px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .slide-title { font-size: 22px; line-height: 1.25; }
+      .slide-subtitle { font-size: 13.5px; line-height: 1.45; }
+      .slide-header { margin-bottom: 14px; }
+      
+      /* Title Slide */
+      .title-slide { justify-content: flex-start; padding-top: 24px; gap: 14px; }
+      .title-slide h1 { font-size: 30px; }
+      .title-slide .lead { font-size: 14px; line-height: 1.45; }
+      .stats { grid-template-columns: 1fr; gap: 10px; margin-top: 6px; }
+      .stat { padding: 12px 14px; }
+      .stat b { font-size: 24px; }
+      .stat span { font-size: 12px; }
+
+      /* Menu / Overview Slide */
+      .levels { grid-template-columns: 1fr; gap: 12px; }
+      .level-card { padding: 12px 14px; }
+      .level-card h3 { font-size: 14px; }
+      .level-card .why { font-size: 12px; margin-bottom: 8px; }
+      .level-card li { font-size: 13px; }
+
+      /* Scenarios */
+      .scenario {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .phone {
+        max-height: none;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.35);
+      }
+      .phone-head { padding: 8px 12px; }
+      .avatar { width: 28px; height: 28px; font-size: 12px; }
+      .phone-head .name { font-size: 13px; }
+      .phone-head .status { font-size: 11px; }
+      .chat { padding: 10px 10px 14px; font-size: 12px; }
+      .msg .bubble { padding: 7px 10px; border-radius: 10px; }
+      .legend { display: none; }
+
+      /* Screens (Trang quản trị web) */
+      .screens { grid-template-columns: 1fr; gap: 8px; }
+      .screen { padding: 10px 12px; }
+      .screen b { font-size: 13px; }
+      .screen p { font-size: 12px; }
+
+      /* Summary Slide */
+      .principles { grid-template-columns: 1fr; gap: 10px; }
+      .principle { padding: 14px; }
+      .principle h3 { font-size: 15px; }
+      .principle p { font-size: 13px; }
+
+      /* Controls bar on Mobile */
+      .controls {
+        height: 48px;
+        padding: 0 10px;
+      }
+      .controls > div { gap: 6px; }
+      .btn {
+        padding: 5px 8px;
+        font-size: 11.5px;
+        border-radius: 6px;
+      }
+      .counter { font-size: 11px; }
+      #btn-notes { display: none; }
+      #btn-fs { display: none; }
+      #notes-panel {
+        left: 10px; right: 10px; width: auto; bottom: 50px;
+      }
+    }
     @media print {
       @page { size: 1440px 900px; margin: 0; }
       body { overflow: visible; height: auto; }
@@ -217,8 +293,8 @@
     </div>
     <div>
       <button class="btn" onclick="go(1)" title="Về slide menu">☰ Menu</button>
-      <button class="btn" onclick="toggleNotes()" title="Phím N">📝 Ghi chú</button>
-      <button class="btn" onclick="toggleFullScreen()" title="Phím F">⛶ Toàn màn hình</button>
+      <button class="btn" id="btn-notes" onclick="toggleNotes()" title="Phím N">📝 Ghi chú</button>
+      <button class="btn" id="btn-fs" onclick="toggleFullScreen()" title="Phím F">⛶ Toàn màn hình</button>
     </div>
   </div>
   <div id="notes-panel"><h4>Gợi ý thuyết trình</h4><div id="notes-content"></div></div>
@@ -681,7 +757,11 @@
     function go(i) {
       if (i < 0 || i >= slides.length) return;
       current = i;
-      slides.forEach((s, k) => s.classList.toggle("active", k === i));
+      slides.forEach((s, k) => {
+        const active = k === i;
+        s.classList.toggle("active", active);
+        if (active) s.scrollTop = 0;
+      });
       counter.textContent = `Slide ${pad(i + 1)} / ${pad(slides.length)}`;
       progress.style.width = `${(i / (slides.length - 1)) * 100}%`;
       notesContent.textContent = slides[i].dataset.notes || "Không có ghi chú cho slide này.";
